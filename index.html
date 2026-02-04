@@ -235,7 +235,67 @@
                 <div id="kpi3NoteEditor" class="quill-editor"></div>
             </div>
         </div>
-
+<!-- THÊM VÀO SAU BẢNG KPI 3 - Trước phần "BẢNG 4" -->
+<div class="bg-gray-50 p-6 mt-6 rounded-lg border border-gray-300 shadow-sm">
+    <h3 class="text-lg font-bold mb-4 text-gray-800">THÔNG TIN ĐÁNH GIÁ</h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Người được đánh giá -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tên người được đánh giá (Kế toán trưởng):
+            </label>
+            <input type="text" 
+                   id="evaluatedPerson" 
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                   placeholder="Nhập tên người được đánh giá">
+        </div>
+        
+        <!-- Người quản lý đánh giá -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tên người quản lý đánh giá:
+            </label>
+            <input type="text" 
+                   id="evaluatingManager" 
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                   placeholder="Nhập tên quản lý đánh giá">
+        </div>
+        
+        <!-- Ngày đánh giá -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Ngày đánh giá:
+            </label>
+            <input type="date" 
+                   id="evaluationDate" 
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+        </div>
+        
+        <!-- Chức vụ người đánh giá -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Chức vụ người đánh giá:
+            </label>
+            <input type="text" 
+                   id="evaluatorPosition" 
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                   placeholder="VD: Trưởng phòng, Giám đốc...">
+        </div>
+    </div>
+    
+    <!-- Ghi chú đánh giá -->
+    <div class="mt-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            Ghi chú đánh giá của quản lý:
+        </label>
+        <textarea 
+            id="managerEvaluationNote" 
+            rows="3" 
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+            placeholder="Nhập ghi chú, đánh giá từ quản lý..."></textarea>
+    </div>
+</div>
         <!-- QUY ĐỊNH THƯỞNG KPI -->
         <div class="mt-4 p-6 border border-dashed border-green-500 bg-green-50 rounded-xl shadow-sm mb-8">
             <div class="font-semibold mb-4 text-green-700 text-lg">QUY ĐỊNH THƯỞNG KPI</div>
@@ -510,7 +570,15 @@ function saveKpiData() {
     const creatorName = document.getElementById('creatorName').value.trim();
     const department = document.getElementById('department').value.trim();
     const creationDate = document.getElementById('creationDate').value;
-    
+    // Lấy thông tin đánh giá từ form (thêm vào sau phần lấy creatorName, department...)
+const evaluatedPerson = document.getElementById('evaluatedPerson').value.trim();
+const evaluatingManager = document.getElementById('evaluatingManager').value.trim();
+const evaluationDate = document.getElementById('evaluationDate').value;
+const evaluatorPosition = document.getElementById('evaluatorPosition').value.trim();
+const managerEvaluationNote = document.getElementById('managerEvaluationNote').value.trim();
+
+	
+	
     if (!creatorName || !department || !creationDate) {
         alert('Vui lòng nhập đầy đủ Tên người lập, Bộ phận và Ngày lập.');
         return false;
@@ -557,24 +625,31 @@ function saveKpiData() {
     // Tính tổng điểm
     const scores = calculateAllScores();
     
-    // Tạo đối tượng dữ liệu
-    const kpiData = {
-        creatorName,
-        department,
-        creationDate,
-        kpiRows: kpiRowsData,
-        kpi2Data,
-        kpi3Data,
-        kpi2Note,
-        kpi3Note,
-        scores,
-        year: new Date().getFullYear(),
-        month: new Date().getMonth() + 1,
-        id: currentKpiId || generateId(),
-        lastModified: new Date().toISOString(),
-        type: 'quan-ly-kho'
-    };
+   // Tạo đối tượng dữ liệu (CHỈ CÓ MỘT LẦN KHAI BÁO kpiData)
+const kpiData = {
+    creatorName,
+    department,
+    creationDate,
     
+    // Thêm thông tin đánh giá mới
+    evaluatedPerson,
+    evaluatingManager,
+    evaluationDate,
+    evaluatorPosition,
+    managerEvaluationNote,
+    
+    kpiRows: kpiRowsData,
+    kpi2Data,
+    kpi3Data,
+    kpi2Note,
+    kpi3Note,
+    scores,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    id: currentKpiId || generateId(),
+    lastModified: new Date().toISOString(),
+    type: 'quan-ly-kho'
+};
     // Lưu lên Firebase
     db.ref('kpi_quan_ly_kho/' + kpiData.id).set(kpiData, err => {
         if (err) {
@@ -1035,6 +1110,7 @@ window.onclick = function(event) {
 </script>
 </body>
 </html>
+
 
 
 
